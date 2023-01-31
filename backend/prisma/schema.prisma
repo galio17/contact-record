@@ -9,3 +9,54 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Client {
+  id        String    @id @default(uuid())
+  contacts  Contact[] @relation("clientList")
+  ownClient Contact   @relation("ownClient", fields: [ownContactId], references: [id])
+
+  ownContactId String   @unique
+  email        String
+  password     String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Contact {
+  id        String  @id @default(uuid())
+  client    Client? @relation("clientList", fields: [clientId], references: [id])
+  ownClient Client? @relation("ownClient")
+  email     Email[]
+
+  clientId   String?
+  name       String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  Number     Number[]
+}
+
+model Email {
+  id         String     @id @default(uuid())
+  contact    Contact    @relation(fields: [contactId], references: [id])
+  connection Connection @relation(fields: [connectionId], references: [id])
+
+  contactId    String
+  connectionId String
+}
+
+model Number {
+  id         String     @id @default(uuid())
+  contact    Contact    @relation(fields: [contactId], references: [id])
+  connection Connection @relation(fields: [connectionId], references: [id])
+
+  contactId    String
+  connectionId String
+}
+
+model Connection {
+  id     String   @id @default(uuid())
+  Email  Email[]
+  Number Number[]
+
+  contact String
+}
