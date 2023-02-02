@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { execSync } from "child_process";
+import { randomUUID } from "crypto";
 import { join } from "path";
-import { v4 as uuid } from "uuid";
 
 const generateDatabaseUrl = (schema: string) => {
   if (!process.env.DATABASE_URL) {
@@ -14,7 +14,7 @@ const generateDatabaseUrl = (schema: string) => {
   return url.toString();
 };
 
-const schemaId = "test-" + uuid();
+const schemaId = "test-" + randomUUID();
 const prismaBinary = join(
   __dirname,
   "..",
