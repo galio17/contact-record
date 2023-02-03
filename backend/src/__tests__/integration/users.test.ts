@@ -4,7 +4,7 @@ import app from "../../app";
 import {
   userMock,
   userWithManyEmailsMock,
-  userWithoutAccessEmail,
+  userWithoutAccessEmailMock,
 } from "../mocks";
 
 describe("POST /users", () => {
@@ -17,6 +17,7 @@ describe("POST /users", () => {
         name: userMock.name,
         emails: [userMock.emails],
         phones: [userMock.phones],
+        isActive: true,
       });
       expect(response.status).toBe(201);
     });
@@ -29,7 +30,7 @@ describe("POST /users", () => {
       expect(response.body).toEqual({
         id: expect.any(String),
         name: userWithManyEmailsMock.name,
-        emails: [userWithManyEmailsMock.emails],
+        emails: userWithManyEmailsMock.emails,
         phones: [userWithManyEmailsMock.phones],
       });
       expect(response.status).toBe(201);
@@ -47,21 +48,21 @@ describe("POST /users", () => {
           expect.stringMatching(/^(?=.*required)(?=.*password).$/),
           expect.stringMatching(/^(?=.*required)(?=.*phones).$/),
         ]),
-        errorType: expect.any(String),
+        typeError: expect.any(String),
       });
       expect(response.status).toBe(400);
     });
 
-    test("with many emails without access email position", async () => {
+    test("with many emails without access email", async () => {
       const response = await supertest(app)
         .post("/users")
-        .send(userWithoutAccessEmail);
+        .send(userWithoutAccessEmailMock);
 
       expect(response.body).toEqual({
         message: expect.arrayContaining([
-          expect.stringMatching(/^(?=.*required)(?=.*accessEmailPosition).$/),
+          expect.stringMatching(/^(?=.*required)(?=.*accessEmail).$/),
         ]),
-        errorType: expect.any(String),
+        typeError: expect.any(String),
       });
       expect(response.status).toBe(400);
     });
@@ -71,6 +72,7 @@ describe("POST /users", () => {
 
       expect(response.body).toEqual({
         message: expect.any(String),
+        typeError: expect.any(String),
       });
       expect(response.status).toBe(401);
     });

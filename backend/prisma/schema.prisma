@@ -10,7 +10,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Client {
+model User {
   id        String    @id @default(uuid())
   contacts  Contact[] @relation("clientList")
   ownClient Contact   @relation("ownClient", fields: [ownContactId], references: [id])
@@ -18,21 +18,26 @@ model Client {
   ownContactId String   @unique
   email        String
   password     String
+  isActive     Boolean  @default(true)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+
+  @@map("users")
 }
 
 model Contact {
   id        String  @id @default(uuid())
-  client    Client? @relation("clientList", fields: [clientId], references: [id])
-  ownClient Client? @relation("ownClient")
-  email     Email[]
+  client    User?   @relation("clientList", fields: [clientId], references: [id])
+  ownClient User?   @relation("ownClient")
+  emails    Email[]
+  phones    Phone[]
 
   clientId   String?
   name       String
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
-  Number     Number[]
+
+  @@map("contacts")
 }
 
 model Email {
@@ -42,21 +47,29 @@ model Email {
 
   contactId    String
   connectionId String
+
+  @@unique([contactId, connectionId])
+  @@map("emails")
 }
 
-model Number {
+model Phone {
   id         String     @id @default(uuid())
   contact    Contact    @relation(fields: [contactId], references: [id])
   connection Connection @relation(fields: [connectionId], references: [id])
 
   contactId    String
   connectionId String
+
+  @@unique([contactId, connectionId])
+  @@map("phones")
 }
 
 model Connection {
-  id     String   @id @default(uuid())
-  Email  Email[]
-  Number Number[]
+  id      String  @id @default(uuid())
+  emails  Email[]
+  numbers Phone[]
 
   contact String
+
+  @@map("connections")
 }
