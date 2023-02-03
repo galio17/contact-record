@@ -71,3 +71,56 @@ describe("POST /login", () => {
     });
   });
 });
+
+describe("GET /profile", () => {
+  test("should be able to get profile", async () => {
+    const response = await supertest(app)
+      .get("/profile")
+      .set("Authorization", authorization);
+
+    expect(response.body).toEqual({
+      id: expect.any(String),
+      name: userWithManyEmailsMock.name,
+      emails: userWithManyEmailsMock.emails,
+      phones: [userWithManyEmailsMock.phones],
+    });
+    expect(response.status).toBe(200);
+  });
+
+  describe("should not be able to get profile", () => {
+    test("without authorization", async () => {
+      const response = await supertest(app).get("/profile");
+
+      expect(response.body).toEqual({
+        message: expect.stringMatching(/^(?=.*miss)(?=.*authorization).$/),
+        typeError: expect.any(String),
+      });
+      expect(response.status).toBe(401);
+    });
+
+    test("without token", async () => {
+      const response = await supertest(app)
+        .get("/profile")
+        .set("Authorization", "Bearer");
+
+      expect(response.body).toEqual({
+        message: expect.stringMatching(/^(?=.*miss)(?=.*token).$/),
+        typeError: expect.any(String),
+      });
+      expect(response.status).toBe(401);
+    });
+
+    test("with invalid/expired token", async () => {
+      const response = await supertest(app)
+        .get("/profile")
+        .set("Authorization", "Bearer potato");
+
+      expect(response.body).toEqual({
+        message: expect.stringMatching(
+          /^(?=.*invalid)(?=.*expired)(?=.*token).$/
+        ),
+      });
+      expect(response.status).toBe(401);
+    });
+  });
+});
