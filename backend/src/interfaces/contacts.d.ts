@@ -3,3 +3,5 @@ export interface IContactRequest {
   emails: string | string[];
   phones: string | string[];
 }
+
+export interface IContactUpdate extends Partial<IContactRequest> {}
