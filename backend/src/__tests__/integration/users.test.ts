@@ -43,10 +43,10 @@ describe("POST /users", () => {
 
       expect(response.body).toEqual({
         message: expect.arrayContaining([
-          expect.stringMatching(/^(?=.*required)(?=.*name).$/),
-          expect.stringMatching(/^(?=.*required)(?=.*emails).$/),
-          expect.stringMatching(/^(?=.*required)(?=.*password).$/),
-          expect.stringMatching(/^(?=.*required)(?=.*phones).$/),
+          expect.stringMatching(/^(?=.*required)(?=.*name).$/i),
+          expect.stringMatching(/^(?=.*required)(?=.*emails).$/i),
+          expect.stringMatching(/^(?=.*required)(?=.*password).$/i),
+          expect.stringMatching(/^(?=.*required)(?=.*phones).$/i),
         ]),
         typeError: expect.any(String),
       });
@@ -60,7 +60,7 @@ describe("POST /users", () => {
 
       expect(response.body).toEqual({
         message: expect.arrayContaining([
-          expect.stringMatching(/^(?=.*required)(?=.*accessEmail).$/),
+          expect.stringMatching(/^(?=.*required)(?=.*accessEmail).$/i),
         ]),
         typeError: expect.any(String),
       });

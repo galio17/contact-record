@@ -35,8 +35,8 @@ describe("POST /login", () => {
 
       expect(response.body).toEqual({
         message: expect.arrayContaining([
-          expect.stringMatching(/^(?=.*required)(?=.*email).$/),
-          expect.stringMatching(/^(?=.*required)(?=.*password).$/),
+          expect.stringMatching(/^(?=.*required)(?=.*email).$/i),
+          expect.stringMatching(/^(?=.*required)(?=.*password).$/i),
         ]),
         typeError: expect.any(String),
       });
@@ -53,7 +53,7 @@ describe("POST /login", () => {
 
       expect(response.body).toEqual({
         message: expect.stringMatching(
-          /^(?=.*email)(?=.*password)(?=.*match).$/
+          /^(?=.*email)(?=.*password)(?=.*match).$/i
         ),
         typeError: expect.any(String),
       });
@@ -70,7 +70,7 @@ describe("POST /login", () => {
 
       expect(response.body).toEqual({
         message: expect.stringMatching(
-          /^(?=.*email)(?=.*password)(?=.*match).$/
+          /^(?=.*email)(?=.*password)(?=.*match).$/i
         ),
         typeError: expect.any(String),
       });
@@ -99,7 +99,7 @@ describe("GET /profile", () => {
       const response = await supertest(app).get("/profile");
 
       expect(response.body).toEqual({
-        message: expect.stringMatching(/^(?=.*miss)(?=.*authorization).$/),
+        message: expect.stringMatching(/^(?=.*miss)(?=.*authorization).$/i),
         typeError: expect.any(String),
       });
       expect(response.status).toBe(401);
@@ -111,7 +111,7 @@ describe("GET /profile", () => {
         .set("Authorization", "Bearer");
 
       expect(response.body).toEqual({
-        message: expect.stringMatching(/^(?=.*miss)(?=.*token).$/),
+        message: expect.stringMatching(/^(?=.*miss)(?=.*token).$/i),
         typeError: expect.any(String),
       });
       expect(response.status).toBe(401);
@@ -124,8 +124,9 @@ describe("GET /profile", () => {
 
       expect(response.body).toEqual({
         message: expect.stringMatching(
-          /^(?=.*invalid)(?=.*expired)(?=.*token).$/
+          /^(?=.*invalid)(?=.*expired)(?=.*token).$/i
         ),
+        typeError: expect.any(String),
       });
       expect(response.status).toBe(401);
     });
@@ -164,10 +165,10 @@ describe("PATCH /profile", () => {
 
   describe("should not be able to update profile", () => {
     test("without authorization", async () => {
-      const response = await supertest(app).get("/profile");
+      const response = await supertest(app).patch("/profile");
 
       expect(response.body).toEqual({
-        message: expect.stringMatching(/^(?=.*miss)(?=.*authorization).$/),
+        message: expect.stringMatching(/^(?=.*miss)(?=.*authorization).$/i),
         typeError: expect.any(String),
       });
       expect(response.status).toBe(401);
@@ -175,11 +176,11 @@ describe("PATCH /profile", () => {
 
     test("without token", async () => {
       const response = await supertest(app)
-        .get("/profile")
+        .patch("/profile")
         .set("Authorization", "Bearer");
 
       expect(response.body).toEqual({
-        message: expect.stringMatching(/^(?=.*miss)(?=.*token).$/),
+        message: expect.stringMatching(/^(?=.*miss)(?=.*token).$/i),
         typeError: expect.any(String),
       });
       expect(response.status).toBe(401);
@@ -187,13 +188,64 @@ describe("PATCH /profile", () => {
 
     test("with invalid/expired token", async () => {
       const response = await supertest(app)
-        .get("/profile")
+        .patch("/profile")
         .set("Authorization", "Bearer potato");
 
       expect(response.body).toEqual({
         message: expect.stringMatching(
-          /^(?=.*invalid)(?=.*expired)(?=.*token).$/
+          /^(?=.*invalid)(?=.*expired)(?=.*token).$/i
         ),
+        typeError: expect.any(String),
+      });
+      expect(response.status).toBe(401);
+    });
+  });
+});
+
+describe("DELETE /profile", () => {
+  test("should be able to delete profile", async () => {
+    const response = await supertest(app)
+      .delete("/profile")
+      .set("Authorization", authorization);
+
+    expect(response.body).toEqual({
+      message: expect.stringMatching(/^(?=.*user)(?=.*delete).$/i),
+    });
+  });
+
+  describe("should not be able to delete profile", () => {
+    test("without authorization", async () => {
+      const response = await supertest(app).delete("/profile");
+
+      expect(response.body).toEqual({
+        message: expect.stringMatching(/^(?=.*miss)(?=.*authorization).$/i),
+        typeError: expect.any(String),
+      });
+      expect(response.status).toBe(401);
+    });
+
+    test("without token", async () => {
+      const response = await supertest(app)
+        .delete("/profile")
+        .set("Authorization", "Bearer");
+
+      expect(response.body).toEqual({
+        message: expect.stringMatching(/^(?=.*miss)(?=.*token).$/i),
+        typeError: expect.any(String),
+      });
+      expect(response.status).toBe(401);
+    });
+
+    test("with invalid/expired token", async () => {
+      const response = await supertest(app)
+        .delete("/profile")
+        .set("Authorization", "Bearer potato");
+
+      expect(response.body).toEqual({
+        message: expect.stringMatching(
+          /^(?=.*invalid)(?=.*expired)(?=.*token).$/i
+        ),
+        typeError: expect.any(String),
       });
       expect(response.status).toBe(401);
     });
