@@ -1,8 +1,15 @@
+import { compareSync } from "bcryptjs";
 import supertest from "supertest";
+
 import app from "../../app";
 import { ILogin } from "../../interfaces/sessions";
+import prisma from "../../prisma";
 import { createUserPrisma } from "../../utils";
-import { createUserLoginMock, userWithManyEmailsMock } from "../mocks";
+import {
+  createUserLoginMock,
+  updateUserMock,
+  userWithManyEmailsMock,
+} from "../mocks";
 
 const userLoginMock = createUserLoginMock(userWithManyEmailsMock);
 let authorization = "Bearer ";
@@ -88,6 +95,74 @@ describe("GET /profile", () => {
   });
 
   describe("should not be able to get profile", () => {
+    test("without authorization", async () => {
+      const response = await supertest(app).get("/profile");
+
+      expect(response.body).toEqual({
+        message: expect.stringMatching(/^(?=.*miss)(?=.*authorization).$/),
+        typeError: expect.any(String),
+      });
+      expect(response.status).toBe(401);
+    });
+
+    test("without token", async () => {
+      const response = await supertest(app)
+        .get("/profile")
+        .set("Authorization", "Bearer");
+
+      expect(response.body).toEqual({
+        message: expect.stringMatching(/^(?=.*miss)(?=.*token).$/),
+        typeError: expect.any(String),
+      });
+      expect(response.status).toBe(401);
+    });
+
+    test("with invalid/expired token", async () => {
+      const response = await supertest(app)
+        .get("/profile")
+        .set("Authorization", "Bearer potato");
+
+      expect(response.body).toEqual({
+        message: expect.stringMatching(
+          /^(?=.*invalid)(?=.*expired)(?=.*token).$/
+        ),
+      });
+      expect(response.status).toBe(401);
+    });
+  });
+});
+
+describe("PATCH /profile", () => {
+  test("should be able to update profile", async () => {
+    const response = await supertest(app)
+      .patch("/profile")
+      .send(updateUserMock)
+      .set("Authorization", authorization);
+
+    expect(response.body).toEqual({
+      id: expect.any(String),
+      name: updateUserMock.name,
+      emails: [
+        ...(updateUserMock.emails as string),
+        updateUserMock.accessEmail,
+      ],
+      phones: [updateUserMock.phones],
+      isActive: true,
+    });
+    expect(response.status).toBe(200);
+
+    const updatedUser = await prisma.user.findUnique({
+      where: { email: updateUserMock.accessEmail },
+    });
+    const checkPassword = compareSync(
+      updateUserMock.password!,
+      updatedUser!.password
+    );
+
+    expect(checkPassword).toBe(true);
+  });
+
+  describe("should not be able to update profile", () => {
     test("without authorization", async () => {
       const response = await supertest(app).get("/profile");
 
