@@ -1,7 +1,6 @@
-export interface IUserRequest {
-  emails: string | string[];
+import { IContactRequest } from "./contacts";
+
+export interface IUserRequest extends IContactRequest {
   accessEmail?: string;
   password: string;
-  name: string;
-  phones: string | string[];
 }
