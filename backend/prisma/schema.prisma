@@ -13,7 +13,7 @@ datasource db {
 model User {
   id         String    @id @default(uuid())
   contacts   Contact[] @relation("clientList")
-  ownContact Contact   @relation("ownClient", fields: [ownContactId], references: [id])
+  ownContact Contact   @relation("ownClient", fields: [ownContactId], references: [id], onDelete: Cascade)
 
   ownContactId String   @unique
   email        String   @unique
@@ -41,7 +41,7 @@ model Contact {
 
 model Email {
   id         String     @id @default(uuid())
-  contact    Contact    @relation(fields: [contactId], references: [id])
+  contact    Contact    @relation(fields: [contactId], references: [id], onDelete: Cascade)
   connection Connection @relation(fields: [connectionId], references: [id])
 
   contactId    String
@@ -53,7 +53,7 @@ model Email {
 
 model Phone {
   id         String     @id @default(uuid())
-  contact    Contact    @relation(fields: [contactId], references: [id])
+  contact    Contact    @relation(fields: [contactId], references: [id], onDelete: Cascade)
   connection Connection @relation(fields: [connectionId], references: [id])
 
   contactId    String

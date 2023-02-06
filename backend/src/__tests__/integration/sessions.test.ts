@@ -207,8 +207,8 @@ describe("DELETE /profile", () => {
       .delete("/profile")
       .set("Authorization", authorization);
 
-    expect(response.body).toBe(undefined);
     expect(response.status).toBe(204);
+    expect(response.body).toEqual({});
   });
 
   describe("should not be able to delete profile", () => {

@@ -1,5 +1,6 @@
 import { Router } from "express";
 import {
+  deleteProfileController,
   getProfileController,
   loginController,
   updateProfileController,
@@ -20,4 +21,9 @@ sessionsRouter.patch(
   ensureAuthMiddleware,
   validateSchemaMiddleware(updateProfileSchema),
   updateProfileController
+);
+sessionsRouter.delete(
+  "/profile",
+  ensureAuthMiddleware,
+  deleteProfileController
 );
