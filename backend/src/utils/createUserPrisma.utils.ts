@@ -1,6 +1,6 @@
 import { hashSync } from "bcryptjs";
 import { IUserRequest } from "../interfaces/users";
-import prisma from "../prisma";
+import { prisma } from "../prisma";
 import { manyConnectionsHandler } from "./manyConnectionsHandler.utils";
 
 export const createUserPrisma = async ({
@@ -30,7 +30,7 @@ export const createUserPrisma = async ({
     data: {
       email: accessEmail!,
       password: hashSync(password),
-      ownClient: {
+      ownContact: {
         create: {
           name: name,
           emails: {

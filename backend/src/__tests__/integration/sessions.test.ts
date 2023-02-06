@@ -3,7 +3,7 @@ import supertest from "supertest";
 
 import app from "../../app";
 import { ILogin } from "../../interfaces/sessions";
-import prisma from "../../prisma";
+import { prisma } from "../../prisma";
 import { createUserPrisma } from "../../utils";
 import {
   createUserLoginMock,
