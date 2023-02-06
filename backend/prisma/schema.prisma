@@ -11,14 +11,13 @@ datasource db {
 }
 
 model User {
-  id        String    @id @default(uuid())
-  contacts  Contact[] @relation("clientList")
-  ownClient Contact   @relation("ownClient", fields: [ownContactId], references: [id])
+  id         String    @id @default(uuid())
+  contacts   Contact[] @relation("clientList")
+  ownContact Contact   @relation("ownClient", fields: [ownContactId], references: [id])
 
   ownContactId String   @unique
   email        String   @unique
   password     String
-  isActive     Boolean  @default(true)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
