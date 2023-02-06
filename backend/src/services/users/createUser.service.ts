@@ -2,7 +2,9 @@ import { hash } from "bcryptjs";
 import AppError from "../../errors";
 import { IUserRequest } from "../../interfaces/users";
 import { prisma } from "../../prisma";
+import { userResponseSchema } from "../../schemas";
 import { manyConnectionsHandler } from "../../utils";
+import { formatValue } from "../../utils";
 
 export const createUserService = async ({
   emails,
@@ -61,14 +63,5 @@ export const createUserService = async ({
     },
   });
 
-  const response = {
-    id: user.id,
-    name: user.ownContact.name,
-    emails: user.ownContact.emails.map(({ connection }) => connection.contact),
-    phones: user.ownContact.phones.map(({ connection }) => connection.contact),
-    createdAt: user.createdAt,
-    updatedAt: user.updatedAt,
-  };
-
-  return response;
+  return formatValue(user, userResponseSchema, "ownContact");
 };

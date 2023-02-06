@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { loginController } from "../controllers/sessions";
-import { validateSchemaMiddleware } from "../middlewares";
+import { getProfileController, loginController } from "../controllers/sessions";
+import { ensureAuthMiddleware, validateSchemaMiddleware } from "../middlewares";
 import { loginSchema } from "../schemas/sessions";
 
 export const sessionsRouter = Router();
@@ -10,3 +10,4 @@ sessionsRouter.post(
   validateSchemaMiddleware(loginSchema),
   loginController
 );
+sessionsRouter.get("/profile", ensureAuthMiddleware, getProfileController);
