@@ -23,10 +23,10 @@ describe("POST /login", () => {
     const response = await supertest(app).post("/login").send(userLoginMock);
     authorization += response.body.token;
 
+    expect(response.status).toBe(200);
     expect(response.body).toEqual({
       token: expect.any(String),
     });
-    expect(response.status).toBe(200);
   });
 
   describe("should not be able to login", () => {

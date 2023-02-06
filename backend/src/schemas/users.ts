@@ -1,8 +1,8 @@
 import "yup-phone";
 
 import * as yup from "yup";
+import { emailValidation } from ".";
 
-const emailValidation = yup.string().email().required();
 const phoneValidation = yup.string().phone("BR").required();
 
 export const createUserSchema = yup.object().shape({
