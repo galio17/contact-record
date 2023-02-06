@@ -1,9 +1,10 @@
 import { Prisma } from "@prisma/client";
+import { IReqUser } from "../../interfaces/others";
 import { prisma } from "../../prisma";
 import { userResponseSchema } from "../../schemas";
 import { formatValue } from "../../utils";
 
-export const getProfileService = async (id: string) => {
+export const getProfileService = async ({ id }: IReqUser) => {
   const includeConnection: Prisma.EmailArgs | Prisma.PhoneArgs = {
     include: {
       connection: true,

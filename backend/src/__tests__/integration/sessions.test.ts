@@ -145,7 +145,7 @@ describe("PATCH /profile", () => {
       id: expect.any(String),
       name: updateUserMock.name,
       emails: [
-        ...(updateUserMock.emails as string),
+        ...(userWithManyEmailsMock.emails as string[]),
         updateUserMock.accessEmail,
       ],
       phones: [updateUserMock.phones],

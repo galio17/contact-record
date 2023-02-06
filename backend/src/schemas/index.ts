@@ -1,6 +1,9 @@
+import "yup-phone";
+
 import * as yup from "yup";
 
-export const emailValidation = yup.string().email().required();
+export const emailValidation = yup.string().email();
+export const phoneValidation = yup.string().phone("BR");
 
 const transformConnections = (
   connections: { connection: { contact: string } }[]
@@ -17,11 +20,11 @@ export const contactResponseSchema = yup.object().shape({
 });
 
 export const userResponseSchema = yup.object().shape({
-  id: yup.string(),
-  name: yup.ref("ownContact.name"),
-  emails: yup.ref("ownContact.emails"),
-  phones: yup.ref("ownContact.phones"),
-  createdAt: yup.string(),
-  updatedAt: yup.string(),
   ownContact: contactResponseSchema,
+  updatedAt: yup.string(),
+  createdAt: yup.string(),
+  phones: yup.ref("ownContact.phones"),
+  emails: yup.ref("ownContact.emails"),
+  name: yup.ref("ownContact.name"),
+  id: yup.string(),
 });

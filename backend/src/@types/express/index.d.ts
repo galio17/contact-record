@@ -1,7 +1,4 @@
-interface IReqUser {
-  id: string;
-  ownContactId: string;
-}
+import { IReqUser } from "../../interfaces/others";
 
 declare global {
   namespace Express {
