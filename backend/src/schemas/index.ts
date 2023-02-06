@@ -11,12 +11,12 @@ const transformConnections = (
   return connections.map(({ connection }) => connection.contact);
 };
 export const contactResponseSchema = yup.object().shape({
-  id: yup.string(),
-  name: yup.string(),
-  emails: yup.array().of(yup.string()).transform(transformConnections),
-  phones: yup.array().of(yup.string()).transform(transformConnections),
-  createdAt: yup.string(),
   updatedAt: yup.string(),
+  createdAt: yup.string(),
+  phones: yup.array().of(yup.string()).transform(transformConnections),
+  emails: yup.array().of(yup.string()).transform(transformConnections),
+  name: yup.string(),
+  id: yup.string(),
 });
 
 export const userResponseSchema = yup.object().shape({
