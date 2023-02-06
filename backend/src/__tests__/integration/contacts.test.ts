@@ -8,7 +8,7 @@ import {
   userWithManyEmailsMock,
 } from "../mocks";
 
-let authorization = "Bearer";
+let authorization = "Bearer ";
 let contactId: string;
 
 beforeAll(async () => {
@@ -32,7 +32,9 @@ describe("POST /contacts", () => {
       id: expect.any(String),
       name: contactMock.name,
       emails: contactMock.emails,
-      phones: contactMock.phones,
+      phones: expect.arrayContaining(contactMock.phones as string[]),
+      createdAt: expect.any(String),
+      updatedAt: expect.any(String),
     });
   });
 
@@ -72,14 +74,16 @@ describe("POST /contacts", () => {
     });
 
     test("without required fields", async () => {
-      const response = await supertest(app).post("/users");
+      const response = await supertest(app)
+        .post("/contacts")
+        .set("Authorization", authorization);
 
       expect(response.status).toBe(400);
       expect(response.body).toEqual({
         message: expect.arrayContaining([
-          expect.stringMatching(/^(?=.*required)(?=.*name).*$/i),
-          expect.stringMatching(/^(?=.*required)(?=.*emails).*$/i),
-          expect.stringMatching(/^(?=.*required)(?=.*phones).*$/i),
+          expect.stringMatching(/^(?=.*name)(?=.*required).*$/i),
+          expect.stringMatching(/^(?=.*emails)(?=.*required).*$/i),
+          expect.stringMatching(/^(?=.*phones)(?=.*required).*$/i),
         ]),
         typeError: expect.any(String),
       });
@@ -91,7 +95,9 @@ describe("GET /contacts", () => {
   test("should be able to list own contacts", async () => {
     const response = await supertest(app)
       .get("/contacts")
-      .set("Authorizaation", authorization);
+      .set("Authorization", authorization);
+
+    console.log(response.body);
 
     expect(response.status).toBe(200);
     expect(response.body).toHaveLength(1);
