@@ -1,7 +1,13 @@
+interface IReqUser {
+  id: string;
+  ownContactId: string;
+}
+
 declare global {
   namespace Express {
     interface Request {
-      validatedBody: any;
+      validatedBody?: any;
+      user?: IReqUser;
     }
   }
 }
