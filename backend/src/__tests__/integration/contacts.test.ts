@@ -199,6 +199,18 @@ describe("GET /contacts/:id", () => {
         typeError: expect.any(String),
       });
     });
+
+    test("with invalid contact id", async () => {
+      const response = await supertest(app)
+        .get("/contacts/id")
+        .set("Authorization", authorization);
+
+      expect(response.status).toBe(404);
+      expect(response.body).toEqual({
+        message: expect.stringMatching(/^(?=.*user)(?=.*found).*$/i),
+        typeError: expect.any(String),
+      });
+    });
   });
 });
 
@@ -254,6 +266,18 @@ describe("PATCH /contacts/:id", () => {
         typeError: expect.any(String),
       });
     });
+
+    test("with invalid contact id", async () => {
+      const response = await supertest(app)
+        .patch("/contacts/id")
+        .set("Authorization", authorization);
+
+      expect(response.status).toBe(404);
+      expect(response.body).toEqual({
+        message: expect.stringMatching(/^(?=.*user)(?=.*found).*$/i),
+        typeError: expect.any(String),
+      });
+    });
   });
 });
 
@@ -298,6 +322,18 @@ describe("DELETE /contacts/:id", () => {
       expect(response.status).toBe(401);
       expect(response.body).toEqual({
         message: expect.any(String),
+        typeError: expect.any(String),
+      });
+    });
+
+    test("with invalid contact id", async () => {
+      const response = await supertest(app)
+        .delete("/contacts/id")
+        .set("Authorization", authorization);
+
+      expect(response.status).toBe(404);
+      expect(response.body).toEqual({
+        message: expect.stringMatching(/^(?=.*user)(?=.*found).*$/i),
         typeError: expect.any(String),
       });
     });
