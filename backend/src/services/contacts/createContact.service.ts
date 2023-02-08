@@ -2,7 +2,11 @@ import { IContactRequest } from "../../interfaces/contacts";
 import { IReqUser } from "../../interfaces/others";
 import { prisma } from "../../prisma";
 import { contactResponseSchema } from "../../schemas";
-import { formatValue, manyConnectionsHandler } from "../../utils";
+import {
+  formatValue,
+  includeOnContacts,
+  manyConnectionsHandler,
+} from "../../utils";
 
 export const createContactService = async (
   { name, emails, phones }: IContactRequest,
@@ -17,6 +21,7 @@ export const createContactService = async (
   }
 
   const contact = await prisma.contact.create({
+    ...includeOnContacts,
     data: {
       name,
       emails: {
@@ -26,10 +31,6 @@ export const createContactService = async (
         create: phones.map(manyConnectionsHandler),
       },
       user: { connect: { id } },
-    },
-    include: {
-      emails: { include: { connection: true } },
-      phones: { include: { connection: true } },
     },
   });
 
