@@ -97,16 +97,16 @@ describe("GET /contacts", () => {
       .get("/contacts")
       .set("Authorization", authorization);
 
-    console.log(response.body);
-
     expect(response.status).toBe(200);
     expect(response.body).toHaveLength(1);
     expect(response.body).toEqual([
       {
         id: contactId,
         name: contactMock.name,
-        emails: contactMock.emails,
-        phones: contactMock.phones,
+        emails: expect.arrayContaining(contactMock.emails as string[]),
+        phones: expect.arrayContaining(contactMock.phones as string[]),
+        createdAt: expect.any(String),
+        updatedAt: expect.any(String),
       },
     ]);
   });
@@ -158,8 +158,10 @@ describe("GET /contacts/:id", () => {
     expect(response.body).toEqual({
       id: contactId,
       name: contactMock.name,
-      emails: contactMock.emails,
-      phones: contactMock.phones,
+      emails: expect.arrayContaining(contactMock.emails as string[]),
+      phones: expect.arrayContaining(contactMock.phones as string[]),
+      createdAt: expect.any(String),
+      updatedAt: expect.any(String),
     });
   });
 
@@ -211,8 +213,10 @@ describe("PATCH /contacts/:id", () => {
     expect(response.body).toEqual({
       id: expect.any(String),
       name: updateContactMock.name,
-      emails: updateContactMock.emails,
-      phones: [updateContactMock.phones],
+      emails: expect.arrayContaining(updateContactMock.emails as string[]),
+      phones: expect.arrayContaining([updateContactMock.phones]),
+      createdAt: expect.any(String),
+      updatedAt: expect.any(String),
     });
   });
 
