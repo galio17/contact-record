@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   createContactController,
   getUniqueContactController,
+  updateContactController,
 } from "../controllers/contacts";
 import { listContactsController } from "../controllers/contacts/listContacts.controller";
 import { ensureAuthMiddleware, validateSchemaMiddleware } from "../middlewares";
@@ -20,3 +21,4 @@ contactsRouter.post(
 contactsRouter.get("/", ensureAuthMiddleware, listContactsController);
 
 contactsRouter.get("/:id", ensureAuthMiddleware, getUniqueContactController);
+contactsRouter.patch("/:id", ensureAuthMiddleware, updateContactController);
