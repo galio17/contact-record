@@ -6,7 +6,7 @@ import {
 } from "../controllers/contacts";
 import { listContactsController } from "../controllers/contacts/listContacts.controller";
 import { ensureAuthMiddleware, validateSchemaMiddleware } from "../middlewares";
-import { createContactSchema } from "../schemas/contacts";
+import { createContactSchema, updateContactSchema } from "../schemas/contacts";
 import { getUniqueContactService } from "../services/contacts";
 
 export const contactsRouter = Router();
@@ -21,4 +21,9 @@ contactsRouter.post(
 contactsRouter.get("/", ensureAuthMiddleware, listContactsController);
 
 contactsRouter.get("/:id", ensureAuthMiddleware, getUniqueContactController);
-contactsRouter.patch("/:id", ensureAuthMiddleware, updateContactController);
+contactsRouter.patch(
+  "/:id",
+  ensureAuthMiddleware,
+  validateSchemaMiddleware(updateContactSchema),
+  updateContactController
+);

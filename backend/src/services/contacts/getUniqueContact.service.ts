@@ -14,7 +14,7 @@ export const getUniqueContactService = async (
   });
 
   if (!contact) {
-    throw new AppError("User not found", 404);
+    throw new AppError("contact not found", 404);
   }
 
   return formatValue(contact, contactResponseSchema);
