@@ -207,7 +207,7 @@ describe("GET /contacts/:id", () => {
 
       expect(response.status).toBe(404);
       expect(response.body).toEqual({
-        message: expect.stringMatching(/^(?=.*user)(?=.*found).*$/i),
+        message: expect.stringMatching(/^(?=.*contact)(?=.*found).*$/i),
         typeError: expect.any(String),
       });
     });
@@ -274,7 +274,7 @@ describe("PATCH /contacts/:id", () => {
 
       expect(response.status).toBe(404);
       expect(response.body).toEqual({
-        message: expect.stringMatching(/^(?=.*user)(?=.*found).*$/i),
+        message: expect.stringMatching(/^(?=.*contact)(?=.*found).*$/i),
         typeError: expect.any(String),
       });
     });
@@ -333,7 +333,7 @@ describe("DELETE /contacts/:id", () => {
 
       expect(response.status).toBe(404);
       expect(response.body).toEqual({
-        message: expect.stringMatching(/^(?=.*user)(?=.*found).*$/i),
+        message: expect.stringMatching(/^(?=.*contact)(?=.*found).*$/i),
         typeError: expect.any(String),
       });
     });
