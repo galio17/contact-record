@@ -2,24 +2,13 @@ import { Prisma } from "@prisma/client";
 import { IReqUser } from "../../interfaces/others";
 import { prisma } from "../../prisma";
 import { userResponseSchema } from "../../schemas";
-import { formatValue } from "../../utils";
+import { formatValue, includeOnContacts } from "../../utils";
 
 export const getProfileService = async ({ id }: IReqUser) => {
-  const includeConnection: Prisma.EmailArgs | Prisma.PhoneArgs = {
-    include: {
-      connection: true,
-    },
-  };
-
   const user = await prisma.user.findUnique({
     where: { id },
     include: {
-      ownContact: {
-        include: {
-          emails: includeConnection,
-          phones: includeConnection,
-        },
-      },
+      ownContact: includeOnContacts,
     },
   });
 

@@ -4,7 +4,11 @@ import { IReqUser } from "../../interfaces/others";
 import { IUserUpdate } from "../../interfaces/sessions";
 import { prisma } from "../../prisma";
 import { userResponseSchema } from "../../schemas";
-import { formatValue, manyConnectionsHandler } from "../../utils";
+import {
+  formatValue,
+  includeOnContacts,
+  manyConnectionsHandler,
+} from "../../utils";
 
 export const updateProfileService = async (
   { name, emails, accessEmail: email, password, phones }: IUserUpdate,
@@ -47,24 +51,6 @@ export const updateProfileService = async (
       deleteMany: {},
       create: emails.map(manyConnectionsHandler),
     };
-    // updateEmails.deleteMany = {};
-    // updateEmails.create = emails.map(manyConnectionsHandler);
-    // updateEmails.connectOrCreate = emails.map((contact) => {
-    //   const existEmail = oldEmails.find(
-    //     ({ connection }) => connection.contact === email
-    //   );
-    //   return {
-    //     where: { id: existEmail?.id },
-    //     create: {
-    //       connection: {
-    //         connectOrCreate: {
-    //           where: { contact: contact },
-    //           create: { contact: contact },
-    //         },
-    //       },
-    //     },
-    //   };
-    // });
   }
 
   if (typeof phones === "string") {
@@ -78,11 +64,6 @@ export const updateProfileService = async (
     };
   }
 
-  const includeConnection: Prisma.EmailArgs | Prisma.PhoneArgs = {
-    include: {
-      connection: true,
-    },
-  };
   const updatedUser = await prisma.user.update({
     where: {
       id,
@@ -99,12 +80,7 @@ export const updateProfileService = async (
       },
     },
     include: {
-      ownContact: {
-        include: {
-          emails: includeConnection,
-          phones: includeConnection,
-        },
-      },
+      ownContact: includeOnContacts,
     },
   });
 

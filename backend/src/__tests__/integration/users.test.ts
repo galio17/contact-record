@@ -50,7 +50,7 @@ describe("POST /users", () => {
           expect.stringMatching(/^(?=.*name)(?=.*required).*$/i),
           expect.stringMatching(/^(?=.*emails)(?=.*required).*$/i),
           expect.stringMatching(/^(?=.*password)(?=.*required).*$/i),
-          expect.stringMatching(/^(?=.*phones)(?=.*required).*$/i),
+          expect.stringMatching(/^(?=.*valid)(?=.*phone).*$/i),
         ]),
         typeError: expect.any(String),
       });

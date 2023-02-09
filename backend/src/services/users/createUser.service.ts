@@ -3,7 +3,7 @@ import AppError from "../../errors";
 import { IUserRequest } from "../../interfaces/users";
 import { prisma } from "../../prisma";
 import { userResponseSchema } from "../../schemas";
-import { manyConnectionsHandler } from "../../utils";
+import { includeOnContacts, manyConnectionsHandler } from "../../utils";
 import { formatValue } from "../../utils";
 
 export const createUserService = async ({
@@ -54,12 +54,7 @@ export const createUserService = async ({
       },
     },
     include: {
-      ownContact: {
-        include: {
-          emails: { include: { connection: true } },
-          phones: { include: { connection: true } },
-        },
-      },
+      ownContact: includeOnContacts,
     },
   });
 

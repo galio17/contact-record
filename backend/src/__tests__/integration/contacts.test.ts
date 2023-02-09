@@ -97,16 +97,16 @@ describe("GET /contacts", () => {
       .get("/contacts")
       .set("Authorization", authorization);
 
-    console.log(response.body);
-
     expect(response.status).toBe(200);
     expect(response.body).toHaveLength(1);
     expect(response.body).toEqual([
       {
         id: contactId,
         name: contactMock.name,
-        emails: contactMock.emails,
-        phones: contactMock.phones,
+        emails: expect.arrayContaining(contactMock.emails as string[]),
+        phones: expect.arrayContaining(contactMock.phones as string[]),
+        createdAt: expect.any(String),
+        updatedAt: expect.any(String),
       },
     ]);
   });
@@ -158,8 +158,10 @@ describe("GET /contacts/:id", () => {
     expect(response.body).toEqual({
       id: contactId,
       name: contactMock.name,
-      emails: contactMock.emails,
-      phones: contactMock.phones,
+      emails: expect.arrayContaining(contactMock.emails as string[]),
+      phones: expect.arrayContaining(contactMock.phones as string[]),
+      createdAt: expect.any(String),
+      updatedAt: expect.any(String),
     });
   });
 
@@ -197,6 +199,18 @@ describe("GET /contacts/:id", () => {
         typeError: expect.any(String),
       });
     });
+
+    test("with invalid contact id", async () => {
+      const response = await supertest(app)
+        .get("/contacts/id")
+        .set("Authorization", authorization);
+
+      expect(response.status).toBe(404);
+      expect(response.body).toEqual({
+        message: expect.stringMatching(/^(?=.*contact)(?=.*found).*$/i),
+        typeError: expect.any(String),
+      });
+    });
   });
 });
 
@@ -211,8 +225,10 @@ describe("PATCH /contacts/:id", () => {
     expect(response.body).toEqual({
       id: expect.any(String),
       name: updateContactMock.name,
-      emails: updateContactMock.emails,
-      phones: [updateContactMock.phones],
+      emails: expect.arrayContaining(updateContactMock.emails as string[]),
+      phones: expect.arrayContaining([updateContactMock.phones]),
+      createdAt: expect.any(String),
+      updatedAt: expect.any(String),
     });
   });
 
@@ -250,6 +266,18 @@ describe("PATCH /contacts/:id", () => {
         typeError: expect.any(String),
       });
     });
+
+    test("with invalid contact id", async () => {
+      const response = await supertest(app)
+        .patch("/contacts/id")
+        .set("Authorization", authorization);
+
+      expect(response.status).toBe(404);
+      expect(response.body).toEqual({
+        message: expect.stringMatching(/^(?=.*contact)(?=.*found).*$/i),
+        typeError: expect.any(String),
+      });
+    });
   });
 });
 
@@ -260,7 +288,7 @@ describe("DELETE /contacts/:id", () => {
       .set("Authorization", authorization);
 
     expect(response.status).toBe(204);
-    expect(response.body).toBe(undefined);
+    expect(response.body).toEqual({});
   });
 
   describe("should not be able to delete contacts/id", () => {
@@ -294,6 +322,18 @@ describe("DELETE /contacts/:id", () => {
       expect(response.status).toBe(401);
       expect(response.body).toEqual({
         message: expect.any(String),
+        typeError: expect.any(String),
+      });
+    });
+
+    test("with invalid contact id", async () => {
+      const response = await supertest(app)
+        .delete("/contacts/id")
+        .set("Authorization", authorization);
+
+      expect(response.status).toBe(404);
+      expect(response.body).toEqual({
+        message: expect.stringMatching(/^(?=.*contact)(?=.*found).*$/i),
         typeError: expect.any(String),
       });
     });
