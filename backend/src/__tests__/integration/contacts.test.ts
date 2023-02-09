@@ -288,7 +288,7 @@ describe("DELETE /contacts/:id", () => {
       .set("Authorization", authorization);
 
     expect(response.status).toBe(204);
-    expect(response.body).toBe(undefined);
+    expect(response.body).toEqual({});
   });
 
   describe("should not be able to delete contacts/id", () => {
