@@ -9,6 +9,7 @@ const App = () => (
   <>
     <UserProvider>
       <ToastContainer newestOnTop position="top-center" autoClose={3000} />
+      <CssBaseline />
       <MainRoutes />
     </UserProvider>
   </>
