@@ -1,8 +1,11 @@
+import UserProvider from "./provider/user";
 import MainRoutes from "./routes";
 
 const App = () => (
   <>
-    <MainRoutes />
+    <UserProvider>
+      <MainRoutes />
+    </UserProvider>
   </>
 );
 
