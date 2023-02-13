@@ -5,7 +5,10 @@ export const useToastLoading = () => {
 
   const success = (toastId: Id, message: string = "Sucesso") => {
     toast.update(toastId, {
+      delay: 500,
       isLoading: false,
+      closeOnClick: true,
+      draggable: true,
       autoClose: 3000,
       type: "success",
       render: message,

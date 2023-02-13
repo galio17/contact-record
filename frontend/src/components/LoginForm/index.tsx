@@ -1,5 +1,5 @@
 import { Button } from "@mui/material";
-import { toast } from "react-toastify";
+import { useToast } from "react-toastify";
 import { apiError } from "../../errors";
 import { useUserContext } from "../../hooks/providers";
 import { useToastLoading } from "../../hooks/toastify";
@@ -11,18 +11,21 @@ const LoginForm = () => {
   const { loading, success, error: errorToast } = useToastLoading();
   const { login } = useUserContext();
   const onSubmit = async (data: LoginRequestAPI) => {
-    const toastId = loading("test");
+    const toastId = loading("Carregando");
     try {
-      const loginData = await login(data);
+      await login(data);
       success(toastId, "Login Efetuado com sucesso");
     } catch (error) {
-      const message = apiError(error, ["ewfiuhwef", "gfwrgr"]);
+      const message = apiError(error, [
+        /^(?=.*email)(?=.*password)(?=.*match).*$/,
+        "Email ou senha não correspondem",
+      ]);
 
       if (!message) {
-        return console.log("Erro inexperado");
+        return errorToast(toastId, "Erro inexperado");
       }
 
-      errorToast(toastId, "test");
+      errorToast(toastId, message);
     }
   };
 
