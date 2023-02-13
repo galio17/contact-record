@@ -1,5 +1,6 @@
 import { AxiosError } from "axios";
 import { createContext } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../../services";
 import {
   ErrorAPI,
@@ -14,11 +15,13 @@ export const UserContext = createContext<UserContextValues>(
 );
 
 const UserProvider = ({ children }: UserProviderProps) => {
-  const { Provider } = UserContext;
-
   const login: LoginAPI = async (loginData) => {
     try {
       const { data } = await api.post<LoginReturnAPI>("/login", loginData);
+
+      localStorage.removeItem("@contact-record:token");
+      localStorage.setItem("@contact-record:token", data.token);
+      api.defaults.headers["Authorization"] = data.token;
 
       return data;
     } catch (error) {
@@ -33,7 +36,9 @@ const UserProvider = ({ children }: UserProviderProps) => {
     }
   };
 
-  return <Provider value={{ login }}>{children}</Provider>;
+  return (
+    <UserContext.Provider value={{ login }}>{children}</UserContext.Provider>
+  );
 };
 
 export default UserProvider;

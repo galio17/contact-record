@@ -1,4 +1,5 @@
 import { Button, Stack } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import { apiError } from "../../errors";
 import { useUserContext } from "../../hooks/providers";
 import { useToastLoading } from "../../hooks/toastify";
@@ -7,6 +8,7 @@ import { loginValidator } from "../../validators";
 import Form, { Input } from "../FormFields";
 
 const LoginForm = () => {
+  const navigate = useNavigate();
   const { loading, success, error: errorToast } = useToastLoading();
   const { login } = useUserContext();
   const onSubmit = async (data: LoginRequestAPI) => {
@@ -14,6 +16,7 @@ const LoginForm = () => {
     try {
       await login(data);
       success(toastId, "Login Efetuado com sucesso");
+      navigate("/");
     } catch (error) {
       const message = apiError(error, [
         /^(?=.*email)(?=.*password)(?=.*match).*$/,
