@@ -1,5 +1,4 @@
-import { Button } from "@mui/material";
-import { useToast } from "react-toastify";
+import { Button, Stack } from "@mui/material";
 import { apiError } from "../../errors";
 import { useUserContext } from "../../hooks/providers";
 import { useToastLoading } from "../../hooks/toastify";
@@ -31,9 +30,13 @@ const LoginForm = () => {
 
   return (
     <Form onValid={onSubmit} validator={loginValidator}>
-      <Input name="email" label="Email" />
-      <Input name="password" label="senha" />
-      <Button type="submit">Entrar</Button>
+      <Stack spacing={1}>
+        <Input name="email" label="Email" variant="standard" />
+        <Input name="password" label="senha" variant="standard" />
+        <Button type="submit" variant="contained">
+          Entrar
+        </Button>
+      </Stack>
     </Form>
   );
 };
