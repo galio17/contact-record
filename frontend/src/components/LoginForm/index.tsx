@@ -31,8 +31,18 @@ const LoginForm = () => {
   return (
     <Form onValid={onSubmit} validator={loginValidator}>
       <Stack spacing={1}>
-        <Input name="email" label="Email" variant="standard" />
-        <Input name="password" label="senha" variant="standard" />
+        <Input
+          name="email"
+          label="Email"
+          variant="standard"
+          InputLabelProps={{ required: true }}
+        />
+        <Input
+          name="password"
+          label="senha"
+          variant="standard"
+          InputLabelProps={{ required: true }}
+        />
         <Button type="submit" variant="contained">
           Entrar
         </Button>
